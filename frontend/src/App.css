@@ -1,0 +1,89 @@
+.delete-btn{
+    background-color: red;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.add-btn{
+    background-color: green;
+    color: white;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: none;
+}
+
+.filter{
+    padding: 10px;
+    margin-bottom: 20px;
+
+}
+.filter:active{
+    border: 2px blue;
+}
+body{
+    font-family: "Oswald", sans-serif;
+}
+.form-container{
+    display: flex;
+    gap: 15px;
+    
+}
+.form-container input{
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px 20px; /* Increase padding */
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+td:first-child {
+    width: 40%; /* Adjust width of the first column (name) */
+}
+
+td:nth-child(2) {
+    width: 40%; /* Adjust width of the second column (number) */
+}
+
+td:nth-child(3) {
+    width: 20%; 
+}
+
+.delete-btn {
+    background-color: #f44336; /* Red background */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    padding: 5px 10px; /* Padding inside the button */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.delete-btn:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+}
+
+.message{
+    border: none;
+    padding: 7px;
+    color: white;
+}
+.success{
+    background-color: green;
+}
+.fail{
+    background-color: red;
+}
