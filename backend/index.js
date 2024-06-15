@@ -118,7 +118,7 @@ app.get('/info',(request,response)=>{
 
 app.use(unknownEndpoint)//Checks all handlers and an endpoint apart from them is made then it is executed
 
-const PORT=5004
+const PORT=process.env.PORT||5004
 app.listen(PORT,()=>{
     console.log(`Server running on port ${PORT}`)
 })
