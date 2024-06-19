@@ -8,8 +8,8 @@
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "if exist dist rmdir /s /q dist && cd ../frontend && npm run build && xcopy /E /I dist ..\\backend\\dist",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
-    "lint":"eslint ."
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
+    
   },
   "author": "",
   "license": "ISC",
@@ -21,11 +21,6 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.1.0",
-    "@eslint/js": "^9.5.0",
-    "eslint": "^9.5.0",
-    "eslint-plugin-react": "^7.34.3",
-    "globals": "^15.6.0",
     "nodemon": "^3.1.3"
   }
 }
