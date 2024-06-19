@@ -1,9 +1,16 @@
 const express=require('express')
+const Person=require('./models/person')
+require('dotenv').config()
 const morgan=require('morgan')
 const app=express()
+
 const cors=require('cors')
 app.use(cors())
-app.use(express.json())//Middleware used for handling response and requests
+
+app.use(express.static('dist'))
+app.use(express.json())
+
+//Middleware used for handling response and requests
 //Middlewares are executed in the order they are listed
 //Middleware has request response and next as args
 const requestLogger = (request, response, next) => {
@@ -17,33 +24,21 @@ const requestLogger = (request, response, next) => {
     response.status(404).send({ error: 'unknown endpoint' })
     next()
   }
+
+  const errorHandler=(error,request,response,next)=>{
+
+    console.log(error.message)
+    if(error.name==='CastError')
+        return response.status(404).send({error:"Malformatted id"})
+    else if(error.name==='ValidationError')
+        return response.status(400).json({error:error.message})
+
+    next(error)
+  }
   
   
 app.use(requestLogger)
 
-
-let persons=[
-    { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
 
 
 
@@ -52,60 +47,81 @@ app.get('/',(request,response)=>{
 })
 
 app.get('/api/persons',(request,response)=>{
-    response.json(persons)
+
+    Person.find({}).then(persons=>{
+        response.json(persons)
+    })
 })
 
-app.get('/api/persons/:id',(request,response)=>{
+app.get('/api/persons/:id',(request,response,next)=>{
     const id=request.params.id
-    const person=persons.find(person=>person.id==id)
-    if(person)
-        response.json(person)
-    else
-        response.status(404).send("User Not found")
-})
-
-app.delete('/api/persons/:id',(request,response)=>{
-    const id=request.params.id
-    const person_del=persons.find(person=>person.id==id)
-    if(person_del){
-        persons=persons.filter(person=>person.id!=id)
-        response.status(204).end()
-    }
-    else
-        response.status(404).send("Already Deleted/no such user")
-        
-})
-
-app.post('/api/persons',(request,response)=>{
-    const body=request.body
-    const name=body.name
-    const number=body.number
-
-    const new_person={
-        name:name,
-        number:number,
-        id:Math.floor(Math.random()*100)
-    }
-    let namecheck=persons.find(person=>person.name===new_person.name)
-
-    if(namecheck){
-       return response.status(404).end("User already exists")
-    }
-    if(!name || !number){
-        return response.status(404).end("Name or Number is not specified")
-    }
-    persons=persons.concat(new_person)
-    response.json(new_person)
+    Person.findById(id).then(person=>{
+        if(person)
+            response.json(person)
+        else
+            response.status(404).send({error:"Person not found"})
+    })
+    .catch(error=>next(error))
     
 })
 
-app.put('/api/persons/:id',(request,response)=>{
+app.delete('/api/persons/:id',(request,response,next)=>{
+    const id=request.params.id
+    //const person_del=persons.find(person=>person.id==id)
+    Person.findOneAndDelete({_id:id}).then(deletedperson=>{
+        if(deletedperson)
+            response.status(204).end()
+        else
+            response.status(404).send("Person doesnt exist/Person Already Deleted")
+    })
+    .catch(error=>next(error))
+        
+})
+
+app.post('/api/persons',(request,response,next)=>{
+    const body =request.body
+    
+
+    const person=new Person({
+        name: body.name,
+        number: body.number,
+    })
+
+    person.save().then(savedPerson=>{
+        response.json(savedPerson)
+    })
+    .catch(error=>next(error))
+    
+    
+})
+
+app.put('/api/persons/:id',(request,response,next)=>{
     const id=request.params.id
     const number=request.body.number
-    const update_person=(persons.filter(person=>person.id==id))[0]
-    update_person.number=number
-    response.json(update_person)
+    
+    Person.findById(id).then(person=>{
+        person.number=number
+        person.save().then(person=>{
+            response.json(person)
+        })
+    })
 })
+
+// app.put('/api/persons/:id', (request, response, next) => {
+
+//     const { name,number } = request.body
+  
+//     Note.findByIdAndUpdate(
+//       request.params.id, 
+  
+//       { name,number },
+//       { new: true, runValidators: true, context: 'query' }
+//     ) 
+//       .then(updatedPerson  => {
+//         response.json(updatedPerson)
+//       })
+//       .catch(error => next(error))
+//   })
 
 
 app.get('/info',(request,response)=>{
@@ -118,7 +134,37 @@ app.get('/info',(request,response)=>{
 
 app.use(unknownEndpoint)//Checks all handlers and an endpoint apart from them is made then it is executed
 
+app.use(errorHandler)
+
 const PORT=process.env.PORT||5004
 app.listen(PORT,()=>{
     console.log(`Server running on port ${PORT}`)
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

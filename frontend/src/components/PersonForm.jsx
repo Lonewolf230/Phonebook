@@ -7,7 +7,7 @@ export default function PersonForm(props){
                 Phone: <input onChange={props.onChange} value={props.newPerson.number} name='number'/>
                 </div>
                 <div>
-                <button className="add-btn"type="submit">Add</button>
+                <button className="add-btn"type="submit">Add User</button>
                 </div>
             </form>
         </>
