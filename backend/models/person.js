@@ -3,12 +3,7 @@ require('dotenv').config()
 mongoose.set('strictQuery',false)
 const url=process.env.MONGODB_URI
 
-mongoose.connect(url,{
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true
-  })
+mongoose.connect(url)
 
 const personSchema=new mongoose.Schema({
     name:{
