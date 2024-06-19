@@ -38,7 +38,7 @@ const App = () => {
       
       if (nameExists) {
           if (window.confirm(`${personObj.name} already exists. Replace with a new number?`)) {
-              axios.put(`http://localhost:5004/api/persons/${nameExists.id}`, personObj)
+              axios.put(`/api/persons/${nameExists.id}`, personObj)
                   .then(response => {
                       // Update existing person in state with the updated data
                       setPersons(prevPersons => prevPersons.map(person => person.id === nameExists.id ? response.data : person));
@@ -52,7 +52,7 @@ const App = () => {
           }
       } else {
         
-          axios.post("http://localhost:5004/api/persons", newPerson)
+          axios.post("/api/persons", newPerson)
               .then(response => {
                 
                 
@@ -89,7 +89,7 @@ const App = () => {
 
   function deleteName(id,name){
     if(window.confirm(`Are you sure?`)){
-      axios.delete(`http://localhost:5004/api/persons/${id}`)
+      axios.delete(`/api/persons/${id}`)
       .then(()=>{
         setPersons((prev)=>prev.filter(person=> person.id!=id))
         handleNotification(`${name} deleted successfully`,'success')
@@ -104,7 +104,7 @@ const App = () => {
   
 
 useEffect(()=>{
-  axios.get('http://localhost:5004/api/persons').then(response=>setPersons(response.data));
+  axios.get('/api/persons').then(response=>setPersons(response.data));
 },[])
 
   return (
